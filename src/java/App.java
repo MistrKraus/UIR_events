@@ -7,6 +7,5 @@ public class App {
 
         tweetController = new TweetController(csvName);
         tweetController.loadTweets();
-        tweetController.printTweets();
     }
 }

@@ -2,28 +2,34 @@ import java.util.Date;
 
 public class Tweet {
 
-    private final String no;
-    private final String lang;
-    private final Date date;
-    private final String text;
+    private final String NO;
+    private final String LANG;
+    private final Date DATE;
+    private final String RAW_TXT;
 
     public Tweet(String[] tweet, short tweetLength) {
         if (tweet.length != tweetLength) {
-            this.no = "-";
-            this.lang = "-";
-            this.date = null;
-            this.text = "-";
+            this.NO = "-";
+            this.LANG = "-";
+            this.DATE = null;
+            this.RAW_TXT = "-";
             return;
         }
 
-        this.no = tweet[0];
-        this.lang = tweet[1];
+        this.NO = tweet[0];
+        this.LANG = tweet[1];
+        this.RAW_TXT = tweet[3].replaceAll("(,)++", "");
+
         String[] dateStrings = tweet[2].split(" ");
         String[] timeStrings = dateStrings[3].split(":");
 
-        this.date = new Date(Integer.parseInt(dateStrings[5]), getMonthNo(dateStrings[1]), Integer.parseInt(dateStrings[2])
-                , Integer.parseInt(timeStrings[0]), Integer.parseInt(timeStrings[1]), Integer.parseInt(timeStrings[2]));
-        this.text = tweet[3].replaceAll("(,)++", "");
+        if (timeStrings.length == 3) {
+            this.DATE = new Date(Integer.parseInt(dateStrings[5]), getMonthNo(dateStrings[1]), Integer.parseInt(dateStrings[2])
+                    , Integer.parseInt(timeStrings[0]), Integer.parseInt(timeStrings[1]), Integer.parseInt(timeStrings[2]));
+        } else {
+            this.DATE = null;
+            System.err.println("Unsupported time format!");
+        }
     }
 
     /**
@@ -59,12 +65,13 @@ public class Tweet {
             case "dec":
                 return 12;
             default:
+                System.out.println(month);
                 return 0;
         }
     }
 
     @Override
     public String toString() {
-        return no + ';' + lang + ';' + date.toString() + ": " + text;
+        return NO + ';' + LANG + ';' + DATE.toString() + ": " + RAW_TXT;
     }
 }
